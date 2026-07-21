@@ -138,11 +138,11 @@ export default function ActionsPage() {
             <div style={{display: 'flex', gap: '1.5rem', marginBottom: '1rem'}}>
               <div style={{flex: 1}}>
                 <label className="form-label">Date Created</label>
-                <input type="date" className="form-control" name="date_created" value={newAction.date_created} onChange={handleActionChange} style={{width: '100%'}} />
+                <input type="date" className="form-control" name="date_created" value={newAction.date_created} onChange={handleActionChange} onClick={(e) => { try { e.target.showPicker(); } catch(err) {} }} style={{width: '100%', cursor: 'pointer'}} />
               </div>
               <div style={{flex: 1}}>
                 <label className="form-label">Due Date (Optional)</label>
-                <input type="date" className="form-control" name="due_date" value={newAction.due_date} onChange={handleActionChange} style={{width: '100%'}} />
+                <input type="date" className="form-control" name="due_date" value={newAction.due_date} onChange={handleActionChange} onClick={(e) => { try { e.target.showPicker(); } catch(err) {} }} style={{width: '100%', cursor: 'pointer'}} />
               </div>
               <div style={{flex: 1}}>
                 <label className="form-label">Assign To</label>

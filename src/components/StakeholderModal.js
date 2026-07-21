@@ -315,7 +315,7 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder }) {
                     <div style={{display: 'flex', gap: '1rem', marginBottom: '1rem'}}>
                       <div style={{flex: 1}}>
                         <label className="form-label">Date</label>
-                        <input type="date" className="form-control" name="date" value={newInteraction.date} onChange={handleInteractionChange} />
+                        <input type="date" className="form-control" name="date" value={newInteraction.date} onChange={handleInteractionChange} onClick={(e) => { try { e.target.showPicker(); } catch(err) {} }} style={{cursor: 'pointer'}} />
                       </div>
                       <div style={{flex: 1}}>
                         <label className="form-label">Type</label>
@@ -399,11 +399,11 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder }) {
                     <div style={{display: 'flex', gap: '1rem', marginBottom: '1rem'}}>
                       <div style={{flex: 1}}>
                         <label className="form-label">Date</label>
-                        <input type="date" className="form-control" name="date_created" value={newAction.date_created} onChange={handleActionChange} />
+                        <input type="date" className="form-control" name="date_created" value={newAction.date_created} onChange={handleActionChange} onClick={(e) => { try { e.target.showPicker(); } catch(err) {} }} style={{cursor: 'pointer'}} />
                       </div>
                       <div style={{flex: 1}}>
                         <label className="form-label">Due Date (Optional)</label>
-                        <input type="date" className="form-control" name="due_date" value={newAction.due_date} onChange={handleActionChange} />
+                        <input type="date" className="form-control" name="due_date" value={newAction.due_date} onChange={handleActionChange} onClick={(e) => { try { e.target.showPicker(); } catch(err) {} }} style={{cursor: 'pointer'}} />
                       </div>
                       <div style={{flex: 1}}>
                         <label className="form-label">Assign To</label>
