@@ -11,13 +11,17 @@ const ownerEmails = {
   Ryan: 'ryan@athene-communications.co.uk'
 };
 
-export async function GET() {
+export async function GET(request) {
   const sql = getDb();
   
-  // Fetch general actions (where stakeholder_id is NULL)
+  // Extract action type from query string, defaulting to 'General'
+  const url = new URL(request.url);
+  const type = url.searchParams.get('type') || 'General';
+  
+  // Fetch general actions (where stakeholder_id is NULL) filtered by action_type
   const actions = await sql`
     SELECT * FROM todo_actions 
-    WHERE stakeholder_id IS NULL 
+    WHERE stakeholder_id IS NULL AND action_type = ${type}
     ORDER BY id DESC
   `;
   
@@ -28,10 +32,13 @@ export async function POST(request) {
   const body = await request.json();
   const sql = getDb();
   
+  // Determine action_type
+  const actionType = body.action_type || 'General';
+
   // Insert the new general action
   const result = await sql`
-    INSERT INTO todo_actions (stakeholder_id, date_created, action_description, owner, outcome, date_completed, due_date)
-    VALUES (NULL, ${body.date_created}, ${body.action_description}, ${body.owner}, ${body.outcome || null}, ${body.date_completed || null}, ${body.due_date || null})
+    INSERT INTO todo_actions (stakeholder_id, action_type, date_created, action_description, owner, outcome, date_completed, due_date)
+    VALUES (NULL, ${actionType}, ${body.date_created}, ${body.action_description}, ${body.owner}, ${body.outcome || null}, ${body.date_completed || null}, ${body.due_date || null})
     RETURNING id
   `;
 

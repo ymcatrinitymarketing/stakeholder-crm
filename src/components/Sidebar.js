@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Users, CheckSquare } from 'lucide-react';
+import { Users, CheckSquare, CalendarDays } from 'lucide-react';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -26,6 +26,13 @@ export default function Sidebar() {
         >
           <CheckSquare size={18} />
           General Actions
+        </Link>
+        <Link 
+          href="/175th-actions" 
+          className={`sidebar-link ${pathname === '/175th-actions' ? 'active' : ''}`}
+        >
+          <CalendarDays size={18} />
+          175th Actions
         </Link>
       </nav>
     </aside>

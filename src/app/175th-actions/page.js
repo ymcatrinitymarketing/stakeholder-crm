@@ -20,7 +20,7 @@ export default function ActionsPage() {
   const fetchActions = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/actions?type=General');
+      const res = await fetch('/api/actions?type=175th');
       const data = await res.json();
       setActions(data);
     } catch (err) {
@@ -46,7 +46,7 @@ export default function ActionsPage() {
       const res = await fetch(`/api/actions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...newAction, action_type: 'General' })
+        body: JSON.stringify({ ...newAction, action_type: '175th' })
       });
       if (res.ok) {
         setShowAddAction(false);
@@ -104,7 +104,7 @@ export default function ActionsPage() {
     <div className="animate-fade-in stagger-1">
       <div className="glass-panel" style={{padding: '2rem'}}>
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem'}}>
-          <h2 style={{fontSize: '1.5rem', fontWeight: 600}}>General Actions</h2>
+          <h2 style={{fontSize: '1.5rem', fontWeight: 600}}>175th Anniversary Actions</h2>
           <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
             <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.5rem 1rem', borderRadius: '8px'}}>
               <Filter size={16} color="var(--text-secondary)" />
@@ -126,7 +126,7 @@ export default function ActionsPage() {
                 className="btn btn-outline" 
                 onClick={() => setShowAddAction(true)}
               >
-                <Plus size={18} style={{marginRight: '6px'}}/> Add General Action
+                <Plus size={18} style={{marginRight: '6px'}}/> Add 175th Action
               </button>
             )}
           </div>
@@ -134,7 +134,7 @@ export default function ActionsPage() {
 
         {showAddAction && (
           <div className="animate-fade-in" style={{background: 'rgba(255,255,255,0.05)', padding: '1.5rem', borderRadius: '12px', marginBottom: '2rem', borderLeft: '4px solid var(--tier-1)'}}>
-            <h3 style={{marginBottom: '1rem', fontSize: '1.1rem'}}>New General Action</h3>
+            <h3 style={{marginBottom: '1rem', fontSize: '1.1rem'}}>New 175th Anniversary Action</h3>
             <div style={{display: 'flex', gap: '1.5rem', marginBottom: '1rem'}}>
               <div style={{flex: 1}}>
                 <label className="form-label">Date Created</label>
