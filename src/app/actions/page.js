@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Plus, Trash2, Filter } from 'lucide-react';
+import ActionUpdates from '@/components/ActionUpdates';
 
 export default function ActionsPage() {
   const [actions, setActions] = useState([]);
@@ -235,6 +236,8 @@ export default function ActionsPage() {
                     <Trash2 size={18} />
                   </button>
                 </div>
+
+                {!act.date_completed && <ActionUpdates actionId={act.id} />}
               </div>
             ))}
           </div>

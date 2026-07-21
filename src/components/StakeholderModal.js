@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { X, Save, Plus, Trash2 } from 'lucide-react';
+import ActionUpdates from '@/components/ActionUpdates';
 
 export default function StakeholderModal({ isOpen, onClose, stakeholder }) {
   const [formData, setFormData] = useState({
@@ -480,6 +481,8 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder }) {
                               <span><strong style={{color: 'var(--text-secondary)'}}>Completed:</strong> {new Date(act.date_completed).toLocaleDateString('en-GB')}</span>
                             </div>
                           )}
+                          
+                          {!act.date_completed && <ActionUpdates actionId={act.id} />}
                         </div>
                       ))}
                     </div>
