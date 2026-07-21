@@ -8,7 +8,14 @@ export async function PUT(request, { params }) {
   
   await sql`
     UPDATE stakeholders 
-    SET tier = ${body.tier}, 
+    SET 
+        name = ${body.name},
+        organisation = ${body.organisation},
+        role = ${body.role},
+        category = ${body.category},
+        contact_details = ${body.contact_details},
+        focus_areas = ${body.focus_areas},
+        tier = ${body.tier}, 
         main_contact = ${body.main_contact}, 
         owned_by = ${body.owned_by}
     WHERE id = ${id}

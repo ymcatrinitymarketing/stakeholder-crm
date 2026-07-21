@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Save, Plus, Trash2 } from 'lucide-react';
+import { X, Save, Plus, Trash2, Edit } from 'lucide-react';
 import ActionUpdates from '@/components/ActionUpdates';
+import EditStakeholderModal from '@/components/EditStakeholderModal';
 
-export default function StakeholderModal({ isOpen, onClose, stakeholder }) {
+export default function StakeholderModal({ isOpen, onClose, stakeholder, onStakeholderUpdated }) {
   const [formData, setFormData] = useState({
     tier: 4,
     main_contact: '',
@@ -12,6 +13,8 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder }) {
   });
   const [isSaving, setIsSaving] = useState(false);
   
+  const [selectedStakeholder, setSelectedStakeholder] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [interactions, setInteractions] = useState([]);
   const [loadingInteractions, setLoadingInteractions] = useState(false);
   const [showAddInteraction, setShowAddInteraction] = useState(false);
@@ -223,7 +226,19 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder }) {
         <div className="modal-body" style={{display: 'flex', gap: '2rem', flexWrap: 'wrap'}}>
           {/* LEFT SIDE: Info & Edit */}
           <div style={{flex: '1 1 300px'}}>
-            <h3 style={{fontSize: '1.05rem', marginBottom: '1rem', color: 'var(--text-primary)'}}>Details</h3>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem'}}>
+              <h3 style={{fontSize: '1.05rem', margin: 0, color: 'var(--text-primary)'}}>Details</h3>
+              <button 
+                onClick={() => setIsEditModalOpen(true)}
+                style={{
+                  background: 'rgba(255,255,255,0.1)', border: 'none', borderRadius: '4px', 
+                  color: 'var(--text-primary)', padding: '0.3rem 0.6rem', fontSize: '0.8rem', 
+                  cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.3rem'
+                }}
+              >
+                <Edit size={14} /> Edit
+              </button>
+            </div>
             <div style={{background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', marginBottom: '1rem'}}>
               <div style={{color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '0.25rem'}}>Role / Organisation</div>
               <div style={{fontWeight: 500}}>{stakeholder.role} {stakeholder.organisation ? `- ${stakeholder.organisation}` : ''}</div>
@@ -518,6 +533,18 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder }) {
           </button>
         </div>
       </div>
+
+      <EditStakeholderModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        stakeholder={stakeholder}
+        onSaveSuccess={(updatedData) => {
+          if (onStakeholderUpdated) {
+            onStakeholderUpdated(updatedData);
+          }
+          setIsEditModalOpen(false);
+        }}
+      />
     </div>
   );
 }

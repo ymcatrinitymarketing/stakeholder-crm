@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import StakeholderModal from '@/components/StakeholderModal';
-import { Users, Filter, Search, ShieldCheck } from 'lucide-react';
+import EditStakeholderModal from '@/components/EditStakeholderModal';
+import { Users, Filter, Search, ShieldCheck, Plus } from 'lucide-react';
 
 export default function Dashboard() {
   const [stakeholders, setStakeholders] = useState([]);
@@ -13,6 +14,7 @@ export default function Dashboard() {
   
   const [selectedStakeholder, setSelectedStakeholder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const fetchStakeholders = async () => {
     try {
@@ -118,6 +120,9 @@ export default function Dashboard() {
               <option value="Amanda">Amanda</option>
               <option value="Ian">Ian</option>
             </select>
+            <button className="btn btn-primary" style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}} onClick={() => setIsEditModalOpen(true)}>
+              <Plus size={18} /> Add Stakeholder
+            </button>
           </div>
 
           <div className="table-container">
@@ -168,7 +173,21 @@ export default function Dashboard() {
       <StakeholderModal 
         isOpen={isModalOpen} 
         onClose={closeModal} 
-        stakeholder={selectedStakeholder} 
+        stakeholder={selectedStakeholder}
+        onStakeholderUpdated={(updatedData) => {
+          setSelectedStakeholder(updatedData);
+          fetchStakeholders();
+        }}
+      />
+      
+      <EditStakeholderModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        stakeholder={null}
+        onSaveSuccess={() => {
+          fetchStakeholders();
+          setIsEditModalOpen(false);
+        }}
       />
     </>
   );
