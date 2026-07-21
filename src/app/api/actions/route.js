@@ -40,7 +40,7 @@ export async function POST(request) {
     try {
       if (process.env.RESEND_API_KEY) {
         await resend.emails.send({
-          from: 'YMCA CRM <stakeholdernotifications@ymcatrinity.org.uk>',
+          from: 'Stakeholder Notifications <stakeholdernotifications@ymcatrinity.org.uk>',
           to: ownerEmails[body.owner],
           subject: `New General Action Assigned`,
           html: `
