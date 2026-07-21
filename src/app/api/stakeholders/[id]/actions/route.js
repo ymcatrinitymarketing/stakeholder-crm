@@ -45,7 +45,7 @@ export async function POST(request, { params }) {
     try {
       if (process.env.RESEND_API_KEY) {
         await resend.emails.send({
-          from: 'YMCA CRM <onboarding@resend.dev>',
+          from: 'YMCA CRM <stakeholdernotifications@ymcatrinity.org.uk>',
           to: ownerEmails[body.owner],
           subject: `New Action Assigned: ${stakeholderName}`,
           html: `
