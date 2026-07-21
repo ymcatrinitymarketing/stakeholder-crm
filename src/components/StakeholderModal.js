@@ -29,6 +29,7 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder }) {
   const [showAddAction, setShowAddAction] = useState(false);
   const [newAction, setNewAction] = useState({
     date_created: new Date().toISOString().split('T')[0],
+    due_date: '',
     action_description: '',
     owner: 'Jonathan'
   });
@@ -54,6 +55,7 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder }) {
       });
       setNewAction({
         date_created: new Date().toISOString().split('T')[0],
+        due_date: '',
         action_description: '',
         owner: 'Jonathan'
       });
@@ -167,6 +169,7 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder }) {
         fetchActions(stakeholder.id);
         setNewAction({
           date_created: new Date().toISOString().split('T')[0],
+          due_date: '',
           action_description: '',
           owner: 'Jonathan'
         });
@@ -399,6 +402,10 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder }) {
                         <input type="date" className="form-control" name="date_created" value={newAction.date_created} onChange={handleActionChange} />
                       </div>
                       <div style={{flex: 1}}>
+                        <label className="form-label">Due Date (Optional)</label>
+                        <input type="date" className="form-control" name="due_date" value={newAction.due_date} onChange={handleActionChange} />
+                      </div>
+                      <div style={{flex: 1}}>
                         <label className="form-label">Assign To</label>
                         <select className="form-control" name="owner" value={newAction.owner} onChange={handleActionChange}>
                           <option value="Jonathan">Jonathan</option>
@@ -437,9 +444,20 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder }) {
                               <span style={{fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)'}}>{act.action_description}</span>
                             </div>
                             <div style={{display: 'flex', gap: '0.5rem', alignItems: 'center'}}>
-                              <span style={{fontSize: '0.8rem', color: 'var(--text-secondary)'}}>
-                                {new Date(act.date_created).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                              </span>
+                              <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.25rem'}}>
+                                <span style={{fontSize: '0.8rem', color: 'var(--text-secondary)'}}>
+                                  Created: {new Date(act.date_created).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                </span>
+                                {act.due_date && (
+                                  <span style={{
+                                    fontSize: '0.8rem', 
+                                    color: (!act.date_completed && new Date(act.due_date) < new Date(new Date().setHours(0,0,0,0))) ? '#ef4444' : 'var(--text-secondary)',
+                                    fontWeight: (!act.date_completed && new Date(act.due_date) < new Date(new Date().setHours(0,0,0,0))) ? 'bold' : 'normal'
+                                  }}>
+                                    Due: {new Date(act.due_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                  </span>
+                                )}
+                              </div>
                               <button 
                                 onClick={() => handleDeleteAction(act.id)}
                                 style={{background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '0.2rem'}}

@@ -31,8 +31,8 @@ export async function POST(request, { params }) {
   
   // Insert the new action
   const result = await sql`
-    INSERT INTO todo_actions (stakeholder_id, date_created, action_description, owner, outcome, date_completed)
-    VALUES (${id}, ${body.date_created}, ${body.action_description}, ${body.owner}, ${body.outcome || null}, ${body.date_completed || null})
+    INSERT INTO todo_actions (stakeholder_id, date_created, action_description, owner, outcome, date_completed, due_date)
+    VALUES (${id}, ${body.date_created}, ${body.action_description}, ${body.owner}, ${body.outcome || null}, ${body.date_completed || null}, ${body.due_date || null})
     RETURNING id
   `;
 
@@ -53,6 +53,7 @@ export async function POST(request, { params }) {
             <p><strong>Stakeholder:</strong> ${stakeholderName}</p>
             <p><strong>Action:</strong> ${body.action_description}</p>
             <p><strong>Date Logged:</strong> ${body.date_created}</p>
+            <p><strong>Due Date:</strong> ${body.due_date ? body.due_date : 'No deadline set'}</p>
             <br/>
             <p>Please log in to the CRM to update the outcome once completed.</p>
           `

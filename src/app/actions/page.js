@@ -11,6 +11,7 @@ export default function ActionsPage() {
   const [filterOwner, setFilterOwner] = useState('All');
   const [newAction, setNewAction] = useState({
     date_created: new Date().toISOString().split('T')[0],
+    due_date: '',
     action_description: '',
     owner: 'Jonathan'
   });
@@ -52,6 +53,7 @@ export default function ActionsPage() {
         fetchActions();
         setNewAction({
           date_created: new Date().toISOString().split('T')[0],
+          due_date: '',
           action_description: '',
           owner: 'Jonathan'
         });
@@ -135,8 +137,12 @@ export default function ActionsPage() {
             <h3 style={{marginBottom: '1rem', fontSize: '1.1rem'}}>New General Action</h3>
             <div style={{display: 'flex', gap: '1.5rem', marginBottom: '1rem'}}>
               <div style={{flex: 1}}>
-                <label className="form-label">Date</label>
+                <label className="form-label">Date Created</label>
                 <input type="date" className="form-control" name="date_created" value={newAction.date_created} onChange={handleActionChange} style={{width: '100%'}} />
+              </div>
+              <div style={{flex: 1}}>
+                <label className="form-label">Due Date (Optional)</label>
+                <input type="date" className="form-control" name="due_date" value={newAction.due_date} onChange={handleActionChange} style={{width: '100%'}} />
               </div>
               <div style={{flex: 1}}>
                 <label className="form-label">Assign To</label>
@@ -177,11 +183,20 @@ export default function ActionsPage() {
                 gap: '1.5rem',
                 flexWrap: 'wrap'
               }}>
-                <div style={{flex: '0 0 120px', display: 'flex', flexDirection: 'column', gap: '0.25rem'}}>
+                <div style={{flex: '0 0 140px', display: 'flex', flexDirection: 'column', gap: '0.25rem'}}>
                   <span style={{fontSize: '0.85rem', color: 'var(--text-secondary)'}}>
-                    {new Date(act.date_created).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    Created: {new Date(act.date_created).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </span>
-                  <span style={{fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)'}}>
+                  {act.due_date && (
+                    <span style={{
+                      fontSize: '0.85rem', 
+                      color: (!act.date_completed && new Date(act.due_date) < new Date(new Date().setHours(0,0,0,0))) ? '#ef4444' : 'var(--text-secondary)',
+                      fontWeight: (!act.date_completed && new Date(act.due_date) < new Date(new Date().setHours(0,0,0,0))) ? 'bold' : 'normal'
+                    }}>
+                      Due: {new Date(act.due_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                    </span>
+                  )}
+                  <span style={{fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)', marginTop: '0.25rem'}}>
                     {act.owner}
                   </span>
                 </div>

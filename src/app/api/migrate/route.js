@@ -4,15 +4,8 @@ import { getDb } from '@/lib/db';
 export async function GET() {
   const sql = getDb();
   try {
-    await sql`
-      CREATE TABLE IF NOT EXISTS action_updates (
-        id SERIAL PRIMARY KEY,
-        action_id INTEGER REFERENCES todo_actions(id) ON DELETE CASCADE,
-        date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        update_text TEXT NOT NULL
-      )
-    `;
-    return NextResponse.json({ success: true, message: 'Table created' });
+    await sql`ALTER TABLE todo_actions ADD COLUMN IF NOT EXISTS due_date DATE`;
+    return NextResponse.json({ success: true, message: 'Column due_date added' });
   } catch (err) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }
