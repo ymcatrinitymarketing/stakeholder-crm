@@ -1,12 +1,13 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus } from 'lucide-react';
+import { Plus, Trash2, Filter } from 'lucide-react';
 
 export default function ActionsPage() {
   const [actions, setActions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddAction, setShowAddAction] = useState(false);
+  const [filterOwner, setFilterOwner] = useState('All');
   const [newAction, setNewAction] = useState({
     date_created: new Date().toISOString().split('T')[0],
     action_description: '',
@@ -76,23 +77,56 @@ export default function ActionsPage() {
     }
   };
 
+  const handleDeleteAction = async (actionId) => {
+    if (!confirm('Are you sure you want to delete this action?')) return;
+    try {
+      const res = await fetch(`/api/actions/${actionId}`, {
+        method: 'DELETE'
+      });
+      if (res.ok) {
+        fetchActions();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   if (loading) {
     return <div className="animate-fade-in" style={{textAlign: 'center', marginTop: '4rem'}}>Loading actions...</div>;
   }
 
+  const displayedActions = actions.filter(act => filterOwner === 'All' || act.owner === filterOwner);
+
   return (
     <div className="animate-fade-in stagger-1">
       <div className="glass-panel" style={{padding: '2rem'}}>
-        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem'}}>
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem'}}>
           <h2 style={{fontSize: '1.5rem', fontWeight: 600}}>General Actions</h2>
-          {!showAddAction && (
-            <button 
-              className="btn btn-outline" 
-              onClick={() => setShowAddAction(true)}
-            >
-              <Plus size={18} style={{marginRight: '6px'}}/> Add General Action
-            </button>
-          )}
+          <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
+            <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.05)', padding: '0.5rem 1rem', borderRadius: '8px'}}>
+              <Filter size={16} color="var(--text-secondary)" />
+              <select 
+                className="form-control" 
+                style={{background: 'transparent', border: 'none', padding: 0, color: 'var(--text-primary)', width: 'auto'}}
+                value={filterOwner}
+                onChange={(e) => setFilterOwner(e.target.value)}
+              >
+                <option value="All">All Owners</option>
+                <option value="Jonathan">Jonathan</option>
+                <option value="Amanda">Amanda</option>
+                <option value="Ian">Ian</option>
+                <option value="Ryan">Ryan</option>
+              </select>
+            </div>
+            {!showAddAction && (
+              <button 
+                className="btn btn-outline" 
+                onClick={() => setShowAddAction(true)}
+              >
+                <Plus size={18} style={{marginRight: '6px'}}/> Add General Action
+              </button>
+            )}
+          </div>
         </div>
 
         {showAddAction && (
@@ -126,59 +160,81 @@ export default function ActionsPage() {
           </div>
         )}
 
-        {actions.length === 0 ? (
+        {displayedActions.length === 0 ? (
           <div style={{color: 'var(--text-secondary)', textAlign: 'center', padding: '3rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px'}}>
-            No general actions found.
+            No actions found.
           </div>
         ) : (
-          <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.5rem'}}>
-            {actions.map(act => (
+          <div style={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
+            {displayedActions.map(act => (
               <div key={act.id} className="glass-panel" style={{
                 padding: '1.5rem', 
                 borderLeft: `4px solid ${act.date_completed ? 'var(--tier-2)' : 'var(--tier-1)'}`, 
                 opacity: act.date_completed ? 0.7 : 1,
-                display: 'flex', flexDirection: 'column'
+                display: 'flex', 
+                alignItems: 'center',
+                gap: '1.5rem',
+                flexWrap: 'wrap'
               }}>
-                <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '1rem'}}>
-                  <span style={{fontSize: '0.9rem', color: 'var(--text-secondary)'}}>
+                <div style={{flex: '0 0 120px', display: 'flex', flexDirection: 'column', gap: '0.25rem'}}>
+                  <span style={{fontSize: '0.85rem', color: 'var(--text-secondary)'}}>
                     {new Date(act.date_created).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                   </span>
-                  <span style={{fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-secondary)'}}>
-                    Assigned to: <strong style={{color: 'var(--text-primary)'}}>{act.owner}</strong>
+                  <span style={{fontSize: '0.9rem', fontWeight: 600, color: 'var(--text-primary)'}}>
+                    {act.owner}
                   </span>
                 </div>
                 
-                <div style={{fontWeight: 600, fontSize: '1.1rem', color: 'var(--text-primary)', marginBottom: '1.5rem', flex: 1}}>
-                  {act.action_description}
+                <div style={{flex: '1', minWidth: '200px'}}>
+                  <div style={{fontWeight: 600, fontSize: '1.1rem', color: 'var(--text-primary)', marginBottom: '0.5rem'}}>
+                    {act.action_description}
+                  </div>
+                  {act.date_completed ? (
+                    <div style={{fontSize: '0.9rem', color: 'var(--tier-2)', background: 'rgba(34, 197, 94, 0.1)', padding: '0.5rem 0.75rem', borderRadius: '6px', display: 'inline-block'}}>
+                      <strong>Completed:</strong> {act.outcome}
+                    </div>
+                  ) : (
+                    <div style={{background: 'rgba(0,0,0,0.2)', padding: '0.5rem', borderRadius: '6px', display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+                      <span style={{fontSize: '0.85rem', color: 'var(--text-secondary)', whiteSpace: 'nowrap'}}>Outcome:</span>
+                      <input 
+                        type="text" 
+                        className="form-control" 
+                        placeholder="Type and press Enter to complete..." 
+                        style={{width: '100%', padding: '0.4rem 0.75rem', fontSize: '0.9rem'}}
+                        onBlur={(e) => {
+                          if (e.target.value) {
+                            handleUpdateAction(act.id, { outcome: e.target.value, date_completed: new Date().toISOString() });
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' && e.target.value) {
+                            handleUpdateAction(act.id, { outcome: e.target.value, date_completed: new Date().toISOString() });
+                          }
+                        }}
+                      />
+                    </div>
+                  )}
                 </div>
 
-                {!act.date_completed ? (
-                  <div style={{background: 'rgba(0,0,0,0.2)', padding: '1rem', borderRadius: '8px'}}>
-                    <div style={{fontSize: '0.9rem', marginBottom: '0.5rem', fontWeight: 500}}>Mark as Completed</div>
-                    <input 
-                      type="text" 
-                      className="form-control" 
-                      placeholder="Outcome details..." 
-                      style={{marginBottom: '0.5rem', width: '100%'}}
-                      onBlur={(e) => {
-                        if (e.target.value) {
-                          handleUpdateAction(act.id, { outcome: e.target.value, date_completed: new Date().toISOString() });
-                        }
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' && e.target.value) {
-                          handleUpdateAction(act.id, { outcome: e.target.value, date_completed: new Date().toISOString() });
-                        }
-                      }}
-                    />
-                    <div style={{fontSize: '0.8rem', color: 'var(--text-secondary)'}}>Press Enter or click away to save completion.</div>
-                  </div>
-                ) : (
-                  <div style={{fontSize: '0.95rem', color: 'var(--tier-2)', display: 'flex', flexDirection: 'column', gap: '0.5rem', background: 'rgba(34, 197, 94, 0.1)', padding: '1rem', borderRadius: '8px'}}>
-                    <span><strong style={{color: 'var(--text-primary)'}}>Outcome:</strong> {act.outcome}</span>
-                    <span><strong style={{color: 'var(--text-primary)'}}>Completed:</strong> {new Date(act.date_completed).toLocaleDateString('en-GB')}</span>
-                  </div>
-                )}
+                <div style={{flex: '0 0 auto'}}>
+                  <button 
+                    onClick={() => handleDeleteAction(act.id)}
+                    style={{
+                      background: 'transparent', 
+                      border: 'none', 
+                      color: 'var(--text-secondary)', 
+                      cursor: 'pointer',
+                      padding: '0.5rem',
+                      borderRadius: '4px',
+                      transition: 'all 0.2s'
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.color = 'var(--tier-1)'}
+                    onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
+                    title="Delete action"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
               </div>
             ))}
           </div>

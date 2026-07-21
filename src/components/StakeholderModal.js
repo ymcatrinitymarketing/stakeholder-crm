@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Save, Plus } from 'lucide-react';
+import { X, Save, Plus, Trash2 } from 'lucide-react';
 
 export default function StakeholderModal({ isOpen, onClose, stakeholder }) {
   const [formData, setFormData] = useState({
@@ -183,6 +183,20 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder }) {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updates)
+      });
+      if (res.ok) {
+        fetchActions(stakeholder.id);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleDeleteAction = async (actionId) => {
+    if (!confirm('Are you sure you want to delete this action?')) return;
+    try {
+      const res = await fetch(`/api/actions/${actionId}`, {
+        method: 'DELETE'
       });
       if (res.ok) {
         fetchActions(stakeholder.id);
@@ -417,11 +431,22 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder }) {
                     <div style={{display: 'flex', flexDirection: 'column', gap: '0.75rem'}}>
                       {actions.map(act => (
                         <div key={act.id} style={{background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '8px', borderLeft: `3px solid ${act.date_completed ? 'var(--tier-2)' : 'var(--tier-1)'}`, opacity: act.date_completed ? 0.7 : 1}}>
-                          <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem'}}>
-                            <span style={{fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)'}}>{act.action_description}</span>
-                            <span style={{fontSize: '0.8rem', color: 'var(--text-secondary)'}}>
-                              {new Date(act.date_created).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
-                            </span>
+                          <div style={{display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', alignItems: 'flex-start'}}>
+                            <div style={{flex: 1}}>
+                              <span style={{fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)'}}>{act.action_description}</span>
+                            </div>
+                            <div style={{display: 'flex', gap: '0.5rem', alignItems: 'center'}}>
+                              <span style={{fontSize: '0.8rem', color: 'var(--text-secondary)'}}>
+                                {new Date(act.date_created).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                              </span>
+                              <button 
+                                onClick={() => handleDeleteAction(act.id)}
+                                style={{background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '0.2rem'}}
+                                title="Delete action"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
                           </div>
                           
                           <div style={{fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0.75rem'}}>
