@@ -5,7 +5,17 @@ export async function GET() {
   const sql = getDb();
   try {
     await sql`ALTER TABLE todo_actions ADD COLUMN IF NOT EXISTS action_type VARCHAR(50) DEFAULT 'General'`;
-    return NextResponse.json({ success: true, message: 'Column action_type added' });
+    await sql`
+      CREATE TABLE IF NOT EXISTS calendar_events (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(255) NOT NULL,
+        description TEXT,
+        event_date DATE NOT NULL,
+        owner VARCHAR(100),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `;
+    return NextResponse.json({ success: true, message: 'Migrations run successfully' });
   } catch (err) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });
   }

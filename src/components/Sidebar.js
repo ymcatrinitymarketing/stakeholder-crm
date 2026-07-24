@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Users, CheckSquare, CalendarDays } from 'lucide-react';
+import { Users, CheckSquare, CalendarDays, Calendar as CalendarIcon } from 'lucide-react';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -33,6 +33,13 @@ export default function Sidebar() {
         >
           <CalendarDays size={18} />
           175th Actions
+        </Link>
+        <Link 
+          href="/calendar" 
+          className={`sidebar-link ${pathname === '/calendar' ? 'active' : ''}`}
+        >
+          <CalendarIcon size={18} />
+          Calendar
         </Link>
       </nav>
     </aside>
