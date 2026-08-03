@@ -11,6 +11,7 @@ export default function Dashboard() {
   const [search, setSearch] = useState('');
   const [tierFilter, setTierFilter] = useState('All');
   const [ownerFilter, setOwnerFilter] = useState('All');
+  const [categoryFilter, setCategoryFilter] = useState('All');
   
   const [selectedStakeholder, setSelectedStakeholder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -43,16 +44,22 @@ export default function Dashboard() {
     fetchStakeholders(); // Refresh on close
   };
 
+  const categories = useMemo(() => {
+    const cats = new Set(stakeholders.map(s => s.category).filter(Boolean));
+    return Array.from(cats).sort();
+  }, [stakeholders]);
+
   const filteredData = useMemo(() => {
     return stakeholders.filter(s => {
       const matchesSearch = s.name.toLowerCase().includes(search.toLowerCase()) || 
-                            s.category.toLowerCase().includes(search.toLowerCase()) ||
+                            (s.category && s.category.toLowerCase().includes(search.toLowerCase())) ||
                             (s.organisation && s.organisation.toLowerCase().includes(search.toLowerCase()));
       const matchesTier = tierFilter === 'All' ? true : s.tier === parseInt(tierFilter);
       const matchesOwner = ownerFilter === 'All' ? true : s.owned_by === ownerFilter;
-      return matchesSearch && matchesTier && matchesOwner;
+      const matchesCategory = categoryFilter === 'All' ? true : s.category === categoryFilter;
+      return matchesSearch && matchesTier && matchesOwner && matchesCategory;
     });
-  }, [stakeholders, search, tierFilter, ownerFilter]);
+  }, [stakeholders, search, tierFilter, ownerFilter, categoryFilter]);
 
   const handleExport = () => {
     const headers = ['Stakeholder Name', 'Organisation', 'Role', 'Category', 'Tier', 'Owned By', 'Main Contact (YMCA)', 'Focus Areas', 'Contact Details'];
@@ -142,6 +149,12 @@ export default function Dashboard() {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
+            <select className="select-input" value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
+              <option value="All">All Categories</option>
+              {categories.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
             <select className="select-input" value={tierFilter} onChange={(e) => setTierFilter(e.target.value)}>
               <option value="All">All Tiers</option>
               <option value="1">Tier 1 (Excellent)</option>
