@@ -68,7 +68,7 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder, onStake
     }
   }, [stakeholder, isOpen]);
 
-  const fetchInteractions = async (id) => {
+  async function fetchInteractions(id) {
     setLoadingInteractions(true);
     try {
       const res = await fetch(`/api/stakeholders/${id}/interactions`);
@@ -81,7 +81,7 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder, onStake
     }
   };
 
-  const fetchActions = async (id) => {
+  async function fetchActions(id) {
     setLoadingActions(true);
     try {
       const res = await fetch(`/api/stakeholders/${id}/actions`);

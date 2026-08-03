@@ -16,7 +16,7 @@ export default function ActionUpdates({ actionId }) {
     }
   }, [showUpdates]);
 
-  const fetchUpdates = async () => {
+  async function fetchUpdates() {
     setLoading(true);
     try {
       const res = await fetch(`/api/actions/${actionId}/updates`);
