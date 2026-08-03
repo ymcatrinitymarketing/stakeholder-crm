@@ -1,8 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Trash2, Filter } from 'lucide-react';
+import { Plus, Trash2, Filter, Edit } from 'lucide-react';
 import ActionUpdates from '@/components/ActionUpdates';
+import MultiOwnerSelect from '@/components/MultiOwnerSelect';
+import EditActionModal from '@/components/EditActionModal';
 
 export default function ActionsPage() {
   const [actions, setActions] = useState([]);
@@ -16,6 +18,7 @@ export default function ActionsPage() {
     owner: 'Jonathan'
   });
   const [isSaving, setIsSaving] = useState(false);
+  const [editingAction, setEditingAction] = useState(null);
 
   const fetchActions = async () => {
     setLoading(true);
@@ -98,7 +101,11 @@ export default function ActionsPage() {
     return <div className="animate-fade-in" style={{textAlign: 'center', marginTop: '4rem'}}>Loading actions...</div>;
   }
 
-  const displayedActions = actions.filter(act => filterOwner === 'All' || act.owner === filterOwner);
+  const displayedActions = actions.filter(act => {
+    if (filterOwner === 'All') return true;
+    if (!act.owner) return false;
+    return act.owner.split(',').map(o => o.trim()).includes(filterOwner);
+  });
 
   return (
     <div className="animate-fade-in stagger-1">
@@ -145,13 +152,11 @@ export default function ActionsPage() {
                 <input type="date" className="form-control" name="due_date" value={newAction.due_date} onChange={handleActionChange} onClick={(e) => { try { e.target.showPicker(); } catch(err) {} }} style={{width: '100%', cursor: 'pointer'}} />
               </div>
               <div style={{flex: 1}}>
-                <label className="form-label">Assign To</label>
-                <select className="form-control" name="owner" value={newAction.owner} onChange={handleActionChange} style={{width: '100%'}}>
-                  <option value="Jonathan">Jonathan</option>
-                  <option value="Amanda">Amanda</option>
-                  <option value="Ian">Ian</option>
-                  <option value="Ryan">Ryan</option>
-                </select>
+                <label className="form-label">Assign To (Select multiple)</label>
+                <MultiOwnerSelect 
+                  selectedOwners={newAction.owner}
+                  onChange={(val) => setNewAction(prev => ({...prev, owner: val}))}
+                />
               </div>
             </div>
             <div style={{marginBottom: '1.5rem'}}>
@@ -232,7 +237,26 @@ export default function ActionsPage() {
                   )}
                 </div>
 
-                <div style={{flex: '0 0 auto'}}>
+                <div style={{flex: '0 0 auto', display: 'flex', gap: '0.5rem'}}>
+                  {!act.date_completed && (
+                    <button 
+                      onClick={() => setEditingAction(act)}
+                      style={{
+                        background: 'transparent', 
+                        border: 'none', 
+                        color: 'var(--text-secondary)', 
+                        cursor: 'pointer',
+                        padding: '0.5rem',
+                        borderRadius: '4px',
+                        transition: 'all 0.2s'
+                      }}
+                      onMouseOver={(e) => e.currentTarget.style.color = 'var(--accent)'}
+                      onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
+                      title="Edit action"
+                    >
+                      <Edit size={18} />
+                    </button>
+                  )}
                   <button 
                     onClick={() => handleDeleteAction(act.id)}
                     style={{
@@ -244,7 +268,7 @@ export default function ActionsPage() {
                       borderRadius: '4px',
                       transition: 'all 0.2s'
                     }}
-                    onMouseOver={(e) => e.currentTarget.style.color = 'var(--tier-1)'}
+                    onMouseOver={(e) => e.currentTarget.style.color = 'var(--tier-4)'}
                     onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
                     title="Delete action"
                   >
@@ -258,6 +282,16 @@ export default function ActionsPage() {
           </div>
         )}
       </div>
+
+      <EditActionModal
+        isOpen={!!editingAction}
+        onClose={() => setEditingAction(null)}
+        action={editingAction}
+        onSaveSuccess={() => {
+          setEditingAction(null);
+          fetchActions();
+        }}
+      />
     </div>
   );
 }

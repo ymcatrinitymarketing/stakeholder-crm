@@ -43,28 +43,33 @@ export async function POST(request) {
   `;
 
   // Send Email Notification
-  if (body.owner && ownerEmails[body.owner]) {
-    try {
-      if (process.env.RESEND_API_KEY) {
-        await resend.emails.send({
-          from: 'Stakeholder Notifications <stakeholdernotifications@ymcatrinity.org.uk>',
-          to: ownerEmails[body.owner],
-          subject: `New General Action Assigned`,
-          html: `
-            <h3>You have a new general action assigned to you in the CRM</h3>
-            <p><strong>Action:</strong> ${body.action_description}</p>
-            <p><strong>Date Logged:</strong> ${body.date_created}</p>
-            <p><strong>Due Date:</strong> ${body.due_date ? body.due_date : 'No deadline set'}</p>
-            <br/>
-            <p>Please log in to the CRM to update the outcome once completed: <a href="https://ymca-crm.vercel.app/actions">https://ymca-crm.vercel.app/actions</a></p>
-          `
-        });
-        console.log(`Email sent to ${body.owner}`);
-      } else {
-        console.log(`RESEND_API_KEY not set. Would have sent email to ${body.owner} (${ownerEmails[body.owner]})`);
+  if (body.owner) {
+    const owners = body.owner.split(',').map(o => o.trim());
+    const emailsTo = owners.map(o => ownerEmails[o]).filter(e => e);
+
+    if (emailsTo.length > 0) {
+      try {
+        if (process.env.RESEND_API_KEY) {
+          await resend.emails.send({
+            from: 'Stakeholder Notifications <stakeholdernotifications@ymcatrinity.org.uk>',
+            to: emailsTo,
+            subject: `New General Action Assigned`,
+            html: `
+              <h3>You have a new general action assigned to you in the CRM</h3>
+              <p><strong>Action:</strong> ${body.action_description}</p>
+              <p><strong>Date Logged:</strong> ${body.date_created}</p>
+              <p><strong>Due Date:</strong> ${body.due_date ? body.due_date : 'No deadline set'}</p>
+              <br/>
+              <p>Please log in to the CRM to update the outcome once completed: <a href="https://ymca-crm.vercel.app/actions">https://ymca-crm.vercel.app/actions</a></p>
+            `
+          });
+          console.log(`Email sent to ${emailsTo.join(', ')}`);
+        } else {
+          console.log(`RESEND_API_KEY not set. Would have sent email to ${emailsTo.join(', ')}`);
+        }
+      } catch (error) {
+        console.error('Error sending email:', error);
       }
-    } catch (error) {
-      console.error('Error sending email:', error);
     }
   }
   

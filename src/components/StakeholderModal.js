@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { X, Save, Plus, Trash2, Edit } from 'lucide-react';
 import ActionUpdates from '@/components/ActionUpdates';
 import EditStakeholderModal from '@/components/EditStakeholderModal';
+import MultiOwnerSelect from '@/components/MultiOwnerSelect';
+import EditActionModal from '@/components/EditActionModal';
 
 export default function StakeholderModal({ isOpen, onClose, stakeholder, onStakeholderUpdated }) {
   const [formData, setFormData] = useState({
@@ -37,6 +39,7 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder, onStake
     owner: 'Jonathan'
   });
   const [isSavingAction, setIsSavingAction] = useState(false);
+  const [editingAction, setEditingAction] = useState(null);
 
   useEffect(() => {
     if (stakeholder && isOpen) {
@@ -421,13 +424,11 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder, onStake
                         <input type="date" className="form-control" name="due_date" value={newAction.due_date} onChange={handleActionChange} onClick={(e) => { try { e.target.showPicker(); } catch(err) {} }} style={{cursor: 'pointer'}} />
                       </div>
                       <div style={{flex: 1}}>
-                        <label className="form-label">Assign To</label>
-                        <select className="form-control" name="owner" value={newAction.owner} onChange={handleActionChange}>
-                          <option value="Jonathan">Jonathan</option>
-                          <option value="Amanda">Amanda</option>
-                          <option value="Ian">Ian</option>
-                          <option value="Ryan">Ryan</option>
-                        </select>
+                        <label className="form-label">Assign To (Select multiple)</label>
+                        <MultiOwnerSelect 
+                          selectedOwners={newAction.owner}
+                          onChange={(val) => setNewAction(prev => ({...prev, owner: val}))}
+                        />
                       </div>
                     </div>
                     <div style={{marginBottom: '1rem'}}>
@@ -473,13 +474,24 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder, onStake
                                   </span>
                                 )}
                               </div>
-                              <button 
-                                onClick={() => handleDeleteAction(act.id)}
-                                style={{background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '0.2rem'}}
-                                title="Delete action"
-                              >
-                                <Trash2 size={16} />
-                              </button>
+                              <div style={{display: 'flex', gap: '0.25rem'}}>
+                                {!act.date_completed && (
+                                  <button 
+                                    onClick={() => setEditingAction(act)}
+                                    style={{background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '0.2rem'}}
+                                    title="Edit action"
+                                  >
+                                    <Edit size={16} />
+                                  </button>
+                                )}
+                                <button 
+                                  onClick={() => handleDeleteAction(act.id)}
+                                  style={{background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '0.2rem'}}
+                                  title="Delete action"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              </div>
                             </div>
                           </div>
                           
@@ -543,6 +555,16 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder, onStake
             onStakeholderUpdated(updatedData);
           }
           setIsEditModalOpen(false);
+        }}
+      />
+
+      <EditActionModal
+        isOpen={!!editingAction}
+        onClose={() => setEditingAction(null)}
+        action={editingAction}
+        onSaveSuccess={() => {
+          setEditingAction(null);
+          fetchActions(stakeholder.id);
         }}
       />
     </div>

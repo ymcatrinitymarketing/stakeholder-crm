@@ -168,6 +168,7 @@ export default function EditStakeholderModal({ isOpen, onClose, stakeholder, onS
                   <option value="Jonathan">Jonathan</option>
                   <option value="Amanda">Amanda</option>
                   <option value="Ian">Ian</option>
+                  <option value="Ryan">Ryan</option>
                 </select>
               </div>
               <div style={{flex: '1 1 200px'}}>

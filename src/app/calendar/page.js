@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Plus, X, Trash2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Plus, X, Trash2, MapPin, Clock, FileText } from 'lucide-react';
+import MultiOwnerSelect from '@/components/MultiOwnerSelect';
 
 export default function CalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date());
@@ -16,7 +17,10 @@ export default function CalendarPage() {
   const [newEvent, setNewEvent] = useState({
     title: '',
     description: '',
-    owner: 'Jonathan'
+    event_time: '',
+    location: '',
+    resources: '',
+    owner: ''
   });
   const [isSaving, setIsSaving] = useState(false);
 
@@ -144,7 +148,7 @@ export default function CalendarPage() {
       });
       if (res.ok) {
         fetchAllData();
-        setNewEvent({ title: '', description: '', owner: 'Jonathan' });
+        setNewEvent({ title: '', description: '', event_time: '', location: '', resources: '', owner: '' });
         setShowAddForm(false);
       }
     } catch (e) {
@@ -310,8 +314,28 @@ export default function CalendarPage() {
                       <div>
                         <div style={{fontSize: '0.8rem', color: evt.color, fontWeight: 'bold', marginBottom: '4px', textTransform: 'uppercase'}}>{evt.badge}</div>
                         <div style={{fontWeight: 600, fontSize: '1.05rem', marginBottom: '4px', textDecoration: evt.completed ? 'line-through' : 'none'}}>{evt.title}</div>
+                        
+                        {(evt.event_time || evt.location) && (
+                          <div style={{display: 'flex', gap: '1rem', marginBottom: '8px', fontSize: '0.85rem', color: 'var(--text-secondary)'}}>
+                            {evt.event_time && <span style={{display: 'flex', alignItems: 'center', gap: '4px'}}><Clock size={14}/> {evt.event_time}</span>}
+                            {evt.location && <span style={{display: 'flex', alignItems: 'center', gap: '4px'}}><MapPin size={14}/> {evt.location}</span>}
+                          </div>
+                        )}
+
                         {evt.description && <div style={{fontSize: '0.9rem', color: 'var(--text-secondary)', marginBottom: '8px'}}>{evt.description}</div>}
-                        <div style={{fontSize: '0.85rem', color: 'var(--text-secondary)'}}>Owner: {evt.owner}</div>
+                        
+                        {evt.resources && (
+                          <div style={{fontSize: '0.85rem', color: 'var(--tier-3)', background: 'var(--tier-3-bg)', padding: '0.5rem', borderRadius: '4px', marginBottom: '8px'}}>
+                            <div style={{display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '2px'}}><FileText size={14}/> <strong>Resources:</strong></div>
+                            <div>{evt.resources}</div>
+                          </div>
+                        )}
+
+                        <div style={{fontSize: '0.85rem', color: 'var(--text-secondary)'}}>
+                          Owner: {evt.owner && evt.owner.split(',').map((o, idx) => (
+                            <span key={idx} className="badge badge-tier-2" style={{marginRight: '0.25rem', fontSize: '0.7rem', padding: '0.15rem 0.5rem'}}>{o.trim()}</span>
+                          ))}
+                        </div>
                       </div>
                       {evt.type === 'event' && (
                         <button onClick={() => handleDeleteEvent(evt.real_id || evt.id)} style={{background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer'}}>
@@ -336,20 +360,33 @@ export default function CalendarPage() {
                     <label className="form-label">Event Title</label>
                     <input type="text" className="form-control" value={newEvent.title} onChange={e => setNewEvent({...newEvent, title: e.target.value})} placeholder="e.g. Stakeholder Gala" />
                   </div>
-                  <div style={{width: '120px'}}>
-                    <label className="form-label">Owner</label>
-                    <select className="form-control" value={newEvent.owner} onChange={e => setNewEvent({...newEvent, owner: e.target.value})}>
-                      <option value="Jonathan">Jonathan</option>
-                      <option value="Amanda">Amanda</option>
-                      <option value="Ian">Ian</option>
-                      <option value="Ryan">Ryan</option>
-                    </select>
+                  <div style={{width: '250px'}}>
+                    <label className="form-label">Time</label>
+                    <input type="text" className="form-control" value={newEvent.event_time} onChange={e => setNewEvent({...newEvent, event_time: e.target.value})} placeholder="e.g. 14:00" />
                   </div>
                 </div>
+                
+                <div style={{display: 'flex', gap: '1rem', marginBottom: '1rem'}}>
+                  <div style={{flex: 1}}>
+                    <label className="form-label">Location</label>
+                    <input type="text" className="form-control" value={newEvent.location} onChange={e => setNewEvent({...newEvent, location: e.target.value})} placeholder="Where is this happening?" />
+                  </div>
+                  <div style={{flex: 1}}>
+                    <label className="form-label">Organisers</label>
+                    <MultiOwnerSelect selectedOwners={newEvent.owner} onChange={(val) => setNewEvent({...newEvent, owner: val})} />
+                  </div>
+                </div>
+
                 <div style={{marginBottom: '1rem'}}>
                   <label className="form-label">Description (Optional)</label>
                   <textarea className="form-control" value={newEvent.description} onChange={e => setNewEvent({...newEvent, description: e.target.value})} rows="2"></textarea>
                 </div>
+
+                <div style={{marginBottom: '1rem'}}>
+                  <label className="form-label">Resources Needed (Optional)</label>
+                  <textarea className="form-control" value={newEvent.resources} onChange={e => setNewEvent({...newEvent, resources: e.target.value})} rows="2" placeholder="e.g. Projector, 20 Chairs..."></textarea>
+                </div>
+                
                 <div style={{display: 'flex', justifyContent: 'flex-end', gap: '0.5rem'}}>
                   <button className="btn btn-outline" onClick={() => setShowAddForm(false)}>Cancel</button>
                   <button className="btn btn-primary" onClick={handleSaveEvent} disabled={isSaving}>{isSaving ? 'Saving...' : 'Save Event'}</button>

@@ -7,15 +7,27 @@ export async function PUT(request, context) {
   const sql = getDb();
 
   try {
-    await sql`
-      UPDATE calendar_events 
-      SET 
-        title = ${body.title},
-        description = ${body.description},
-        event_date = ${body.event_date},
-        owner = ${body.owner}
-      WHERE id = ${id}
-    `;
+    const updates = [];
+    if (body.title !== undefined) updates.push(sql`title = ${body.title}`);
+    if (body.description !== undefined) updates.push(sql`description = ${body.description}`);
+    if (body.event_date !== undefined) updates.push(sql`event_date = ${body.event_date}`);
+    if (body.event_time !== undefined) updates.push(sql`event_time = ${body.event_time}`);
+    if (body.location !== undefined) updates.push(sql`location = ${body.location}`);
+    if (body.resources !== undefined) updates.push(sql`resources = ${body.resources}`);
+    if (body.owner !== undefined) updates.push(sql`owner = ${body.owner}`);
+
+    if (updates.length > 0) {
+      const setClause = updates.reduce((acc, current, idx) => {
+        if (idx === 0) return current;
+        return sql`${acc}, ${current}`;
+      });
+
+      await sql`
+        UPDATE calendar_events 
+        SET ${setClause}
+        WHERE id = ${id}
+      `;
+    }
     return NextResponse.json({ success: true });
   } catch (err) {
     console.error(err);

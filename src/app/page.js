@@ -119,6 +119,7 @@ export default function Dashboard() {
               <option value="Jonathan">Jonathan</option>
               <option value="Amanda">Amanda</option>
               <option value="Ian">Ian</option>
+              <option value="Ryan">Ryan</option>
             </select>
             <button className="btn btn-primary" style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}} onClick={() => setIsEditModalOpen(true)}>
               <Plus size={18} /> Add Stakeholder

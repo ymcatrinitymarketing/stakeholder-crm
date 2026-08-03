@@ -20,8 +20,8 @@ export async function POST(request) {
   const sql = getDb();
   try {
     const result = await sql`
-      INSERT INTO calendar_events (title, description, event_date, owner)
-      VALUES (${body.title}, ${body.description || null}, ${body.event_date}, ${body.owner || 'Unassigned'})
+      INSERT INTO calendar_events (title, description, event_date, event_time, location, resources, owner)
+      VALUES (${body.title}, ${body.description || null}, ${body.event_date}, ${body.event_time || null}, ${body.location || null}, ${body.resources || null}, ${body.owner || 'Unassigned'})
       RETURNING id
     `;
     return NextResponse.json({ success: true, id: result[0].id });
