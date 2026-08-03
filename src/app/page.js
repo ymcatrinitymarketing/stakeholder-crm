@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import StakeholderModal from '@/components/StakeholderModal';
 import EditStakeholderModal from '@/components/EditStakeholderModal';
-import { Users, Filter, Search, ShieldCheck, Plus } from 'lucide-react';
+import { Users, Filter, Search, ShieldCheck, Plus, Download } from 'lucide-react';
 
 export default function Dashboard() {
   const [stakeholders, setStakeholders] = useState([]);
@@ -53,6 +53,42 @@ export default function Dashboard() {
       return matchesSearch && matchesTier && matchesOwner;
     });
   }, [stakeholders, search, tierFilter, ownerFilter]);
+
+  const handleExport = () => {
+    const headers = ['Stakeholder Name', 'Organisation', 'Role', 'Category', 'Tier', 'Owned By', 'Main Contact (YMCA)', 'Focus Areas', 'Contact Details'];
+    
+    const escapeCsv = (str) => {
+      if (str == null) return '';
+      const stringified = String(str);
+      if (stringified.includes(',') || stringified.includes('"') || stringified.includes('\n')) {
+        return `"${stringified.replace(/"/g, '""')}"`;
+      }
+      return stringified;
+    };
+
+    const rows = filteredData.map(s => [
+      escapeCsv(s.name),
+      escapeCsv(s.organisation),
+      escapeCsv(s.role),
+      escapeCsv(s.category),
+      escapeCsv(s.tier),
+      escapeCsv(s.owned_by),
+      escapeCsv(s.main_contact),
+      escapeCsv(s.focus_areas),
+      escapeCsv(s.contact_details)
+    ]);
+
+    const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `Stakeholders_Export_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const stats = useMemo(() => {
     return {
@@ -121,6 +157,9 @@ export default function Dashboard() {
               <option value="Ian">Ian</option>
               <option value="Ryan">Ryan</option>
             </select>
+            <button className="btn btn-outline" style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}} onClick={handleExport}>
+              <Download size={18} /> Export
+            </button>
             <button className="btn btn-primary" style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}} onClick={() => setIsEditModalOpen(true)}>
               <Plus size={18} /> Add Stakeholder
             </button>
