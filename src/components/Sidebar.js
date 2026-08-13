@@ -42,6 +42,13 @@ export default function Sidebar() {
           Events Board
         </Link>
         <Link 
+          href="/delivery-plan" 
+          className={`sidebar-link ${pathname === '/delivery-plan' ? 'active' : ''}`}
+        >
+          <CalendarDays size={18} />
+          Delivery Plan
+        </Link>
+        <Link 
           href="/calendar" 
           className={`sidebar-link ${pathname === '/calendar' ? 'active' : ''}`}
         >
