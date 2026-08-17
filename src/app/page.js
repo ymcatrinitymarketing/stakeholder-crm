@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import StakeholderModal from '@/components/StakeholderModal';
 import EditStakeholderModal from '@/components/EditStakeholderModal';
-import { Users, Filter, Search, ShieldCheck, Plus, Download } from 'lucide-react';
+import { Users, Filter, Search, ShieldCheck, Plus, Download, Edit, Trash2 } from 'lucide-react';
 
 export default function Dashboard() {
   const [stakeholders, setStakeholders] = useState([]);
@@ -14,6 +14,7 @@ export default function Dashboard() {
   const [categoryFilter, setCategoryFilter] = useState('All');
   
   const [selectedStakeholder, setSelectedStakeholder] = useState(null);
+  const [stakeholderToEdit, setStakeholderToEdit] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -42,6 +43,24 @@ export default function Dashboard() {
     setSelectedStakeholder(null);
     setIsModalOpen(false);
     fetchStakeholders(); // Refresh on close
+  };
+
+  const handleDeleteStakeholder = async (e, id) => {
+    e.stopPropagation();
+    if (!window.confirm("Are you sure you want to delete this stakeholder? This action cannot be undone.")) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/stakeholders/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        fetchStakeholders();
+      } else {
+        alert("Failed to delete stakeholder.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Failed to delete stakeholder.");
+    }
   };
 
   const categories = useMemo(() => {
@@ -173,7 +192,10 @@ export default function Dashboard() {
             <button className="btn btn-outline" style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}} onClick={handleExport}>
               <Download size={18} /> Export
             </button>
-            <button className="btn btn-primary" style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}} onClick={() => setIsEditModalOpen(true)}>
+            <button className="btn btn-primary" style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}} onClick={() => {
+              setStakeholderToEdit(null);
+              setIsEditModalOpen(true);
+            }}>
               <Plus size={18} /> Add Stakeholder
             </button>
           </div>
@@ -187,6 +209,7 @@ export default function Dashboard() {
                   <th>Tier</th>
                   <th>Owned By</th>
                   <th>Main Contact (YMCA)</th>
+                  <th style={{width: '80px'}}></th>
                 </tr>
               </thead>
               <tbody>
@@ -208,6 +231,28 @@ export default function Dashboard() {
                       )}
                     </td>
                     <td style={{color: 'var(--text-secondary)', fontSize: '0.9rem'}}>{s.main_contact || '-'}</td>
+                    <td style={{width: '80px', textAlign: 'right'}}>
+                      <div style={{display: 'flex', gap: '0.5rem', justifyContent: 'flex-end'}}>
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setStakeholderToEdit(s);
+                            setIsEditModalOpen(true);
+                          }}
+                          style={{background: 'transparent', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', padding: '0.2rem'}}
+                          title="Edit"
+                        >
+                          <Edit size={16} />
+                        </button>
+                        <button 
+                          onClick={(e) => handleDeleteStakeholder(e, s.id)}
+                          style={{background: 'transparent', border: 'none', color: '#ff4d4d', cursor: 'pointer', padding: '0.2rem'}}
+                          title="Delete"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
                 ))}
                 {filteredData.length === 0 && (
@@ -235,11 +280,15 @@ export default function Dashboard() {
       
       <EditStakeholderModal
         isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
-        stakeholder={null}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setStakeholderToEdit(null);
+        }}
+        stakeholder={stakeholderToEdit}
         onSaveSuccess={() => {
           fetchStakeholders();
           setIsEditModalOpen(false);
+          setStakeholderToEdit(null);
         }}
       />
     </>
