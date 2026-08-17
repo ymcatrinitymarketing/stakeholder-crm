@@ -19,6 +19,7 @@ export default function ActionsPage() {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [editingAction, setEditingAction] = useState(null);
+  const [outcomes, setOutcomes] = useState({});
 
   const fetchActions = async () => {
     setLoading(true);
@@ -220,19 +221,36 @@ export default function ActionsPage() {
                       <input 
                         type="text" 
                         className="form-control" 
-                        placeholder="Type and press Enter to complete..." 
+                        placeholder="Type resolution here..." 
                         style={{width: '100%', padding: '0.4rem 0.75rem', fontSize: '0.9rem'}}
-                        onBlur={(e) => {
-                          if (e.target.value) {
-                            handleUpdateAction(act.id, { outcome: e.target.value, date_completed: new Date().toISOString() });
-                          }
-                        }}
+                        value={outcomes[act.id] || ''}
+                        onChange={(e) => setOutcomes(prev => ({ ...prev, [act.id]: e.target.value }))}
                         onKeyDown={(e) => {
-                          if (e.key === 'Enter' && e.target.value) {
-                            handleUpdateAction(act.id, { outcome: e.target.value, date_completed: new Date().toISOString() });
+                          if (e.key === 'Enter' && outcomes[act.id]?.trim()) {
+                            handleUpdateAction(act.id, { outcome: outcomes[act.id].trim(), date_completed: new Date().toISOString() });
                           }
                         }}
                       />
+                      <button 
+                        className="btn" 
+                        style={{
+                          padding: '0.4rem 1rem', 
+                          fontSize: '0.9rem', 
+                          background: outcomes[act.id]?.trim() ? 'var(--tier-2)' : 'rgba(255,255,255,0.05)',
+                          color: outcomes[act.id]?.trim() ? '#fff' : 'var(--text-secondary)',
+                          border: 'none',
+                          cursor: outcomes[act.id]?.trim() ? 'pointer' : 'not-allowed',
+                          whiteSpace: 'nowrap'
+                        }}
+                        disabled={!outcomes[act.id]?.trim()}
+                        onClick={() => {
+                          if (outcomes[act.id]?.trim()) {
+                            handleUpdateAction(act.id, { outcome: outcomes[act.id].trim(), date_completed: new Date().toISOString() });
+                          }
+                        }}
+                      >
+                        Complete
+                      </button>
                     </div>
                   )}
                 </div>

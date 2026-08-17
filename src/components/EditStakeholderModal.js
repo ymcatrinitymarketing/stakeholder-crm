@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { X, Save } from 'lucide-react';
+import { X, Save, Trash2 } from 'lucide-react';
 
 export default function EditStakeholderModal({ isOpen, onClose, stakeholder, onSaveSuccess }) {
   const isEditMode = !!stakeholder;
@@ -85,6 +85,31 @@ export default function EditStakeholderModal({ isOpen, onClose, stakeholder, onS
     } catch (err) {
       console.error(err);
       alert('Failed to save stakeholder. Please try again.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!window.confirm("Are you sure you want to delete this stakeholder? This action cannot be undone.")) {
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      const res = await fetch(`/api/stakeholders/${stakeholder.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) throw new Error('Failed to delete stakeholder');
+
+      if (onSaveSuccess) {
+        onSaveSuccess(null);
+      }
+      onClose();
+    } catch (err) {
+      console.error(err);
+      alert('Failed to delete stakeholder. Please try again.');
     } finally {
       setIsSaving(false);
     }
@@ -178,22 +203,36 @@ export default function EditStakeholderModal({ isOpen, onClose, stakeholder, onS
             </div>
           </div>
 
-          <div style={{display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem'}}>
-            <button 
-              className="btn btn-secondary" 
-              onClick={onClose}
-              disabled={isSaving}
-            >
-              Cancel
-            </button>
-            <button 
-              className="btn btn-primary" 
-              onClick={handleSave}
-              disabled={isSaving}
-              style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}
-            >
-              <Save size={18} /> {isSaving ? 'Saving...' : 'Save Stakeholder'}
-            </button>
+          <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '1rem'}}>
+            <div>
+              {isEditMode && (
+                <button 
+                  className="btn btn-secondary" 
+                  onClick={handleDelete}
+                  disabled={isSaving}
+                  style={{display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#ff4d4d', borderColor: 'rgba(255, 77, 77, 0.2)'}}
+                >
+                  <Trash2 size={18} /> Delete
+                </button>
+              )}
+            </div>
+            <div style={{display: 'flex', gap: '1rem'}}>
+              <button 
+                className="btn btn-secondary" 
+                onClick={onClose}
+                disabled={isSaving}
+              >
+                Cancel
+              </button>
+              <button 
+                className="btn btn-primary" 
+                onClick={handleSave}
+                disabled={isSaving}
+                style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}
+              >
+                <Save size={18} /> {isSaving ? 'Saving...' : 'Save Stakeholder'}
+              </button>
+            </div>
           </div>
         </div>
       </div>
