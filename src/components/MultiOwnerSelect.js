@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-const TEAM_MEMBERS = ['Jonathan', 'Amanda', 'Ian', 'Ryan'];
+const TEAM_MEMBERS = ['Amanda', 'Bridie', 'Ian', 'Jonathan', 'Kay', 'Lizzy', 'Rob', 'Ryan', 'Tim'];
 
 export default function MultiOwnerSelect({ selectedOwners, onChange }) {
   // selectedOwners is expected to be a comma-separated string, e.g., "Jonathan, Ryan"

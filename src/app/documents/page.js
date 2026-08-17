@@ -79,10 +79,15 @@ export default function DocumentsPage() {
           
           <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
             <select className="form-control" value={owner} onChange={e => setOwner(e.target.value)} style={{width: 'auto'}}>
-              <option value="Jonathan">Jonathan</option>
               <option value="Amanda">Amanda</option>
+              <option value="Bridie">Bridie</option>
               <option value="Ian">Ian</option>
+              <option value="Jonathan">Jonathan</option>
+              <option value="Kay">Kay</option>
+              <option value="Lizzy">Lizzy</option>
+              <option value="Rob">Rob</option>
               <option value="Ryan">Ryan</option>
+              <option value="Tim">Tim</option>
             </select>
             <input 
               type="file" 

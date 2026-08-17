@@ -123,10 +123,15 @@ export default function ActionsPage() {
                 onChange={(e) => setFilterOwner(e.target.value)}
               >
                 <option value="All">All Owners</option>
-                <option value="Jonathan">Jonathan</option>
                 <option value="Amanda">Amanda</option>
+                <option value="Bridie">Bridie</option>
                 <option value="Ian">Ian</option>
+                <option value="Jonathan">Jonathan</option>
+                <option value="Kay">Kay</option>
+                <option value="Lizzy">Lizzy</option>
+                <option value="Rob">Rob</option>
                 <option value="Ryan">Ryan</option>
+                <option value="Tim">Tim</option>
               </select>
             </div>
             {!showAddAction && (

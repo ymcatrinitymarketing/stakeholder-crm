@@ -184,10 +184,15 @@ export default function Dashboard() {
             <select className="select-input" value={ownerFilter} onChange={(e) => setOwnerFilter(e.target.value)}>
               <option value="All">All Owners</option>
               <option value="Unassigned">Unassigned</option>
-              <option value="Jonathan">Jonathan</option>
               <option value="Amanda">Amanda</option>
+              <option value="Bridie">Bridie</option>
               <option value="Ian">Ian</option>
+              <option value="Jonathan">Jonathan</option>
+              <option value="Kay">Kay</option>
+              <option value="Lizzy">Lizzy</option>
+              <option value="Rob">Rob</option>
               <option value="Ryan">Ryan</option>
+              <option value="Tim">Tim</option>
             </select>
             <button className="btn btn-outline" style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}} onClick={handleExport}>
               <Download size={18} /> Export

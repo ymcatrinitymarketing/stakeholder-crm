@@ -267,10 +267,15 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder, onStake
               <label className="form-label">Internal Owner</label>
               <select className="form-control" name="owned_by" value={formData.owned_by} onChange={handleChange}>
                 <option value="Unassigned">Unassigned</option>
-                <option value="Jonathan">Jonathan</option>
                 <option value="Amanda">Amanda</option>
+                <option value="Bridie">Bridie</option>
                 <option value="Ian">Ian</option>
+                <option value="Jonathan">Jonathan</option>
+                <option value="Kay">Kay</option>
+                <option value="Lizzy">Lizzy</option>
+                <option value="Rob">Rob</option>
                 <option value="Ryan">Ryan</option>
+                <option value="Tim">Tim</option>
               </select>
             </div>
 
