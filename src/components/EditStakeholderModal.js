@@ -116,8 +116,8 @@ export default function EditStakeholderModal({ isOpen, onClose, stakeholder, onS
   };
 
   return (
-    <div className="modal-backdrop" style={{zIndex: 2000}}>
-      <div className="modal-content animate-fade-in" style={{maxWidth: '800px', width: '90%'}}>
+    <div className={`modal-overlay ${isOpen ? 'active' : ''}`} onClick={(e) => { if(e.target === e.currentTarget) onClose(); }} style={{zIndex: 2000}}>
+      <div className="modal-content" style={{maxWidth: '800px', width: '90%'}}>
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem'}}>
           <h2 style={{margin: 0}}>{isEditMode ? 'Edit Stakeholder Details' : 'Add New Stakeholder'}</h2>
           <button onClick={onClose} style={{background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-secondary)'}}>
