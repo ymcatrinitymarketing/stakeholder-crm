@@ -74,12 +74,15 @@ export default function DeliveryPlanPage() {
             {sortedMonths.map(month => (
               <div key={month} className="timeline-month-section">
                 <h3 style={{
-                  fontSize: '1.25rem', 
+                  fontSize: '1.3rem', 
                   fontWeight: 700, 
                   marginBottom: '1.5rem',
-                  paddingBottom: '0.5rem',
-                  borderBottom: '2px solid rgba(255,255,255,0.1)',
-                  color: 'var(--accent)'
+                  padding: '0.75rem 1.5rem',
+                  background: 'var(--tier-1-bg)',
+                  borderLeft: '4px solid var(--tier-1)',
+                  borderRadius: '8px',
+                  color: '#fff',
+                  boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
                 }}>
                   {month}
                 </h3>
