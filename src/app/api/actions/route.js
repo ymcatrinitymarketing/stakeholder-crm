@@ -8,7 +8,11 @@ const ownerEmails = {
   Jonathan: 'jonathan.martin@ymcatrinity.org.uk',
   Amanda: 'amanda.butterworth@ymcatrinity.org.uk',
   Ian: 'ian.birch@ymcatrinity.org.uk',
-  Ryan: 'ryan@athene-communications.co.uk'
+  Ryan: 'ryan@athene-communications.co.uk',
+  Bridie: 'Bridie.Carson@ymcatrinity.org.uk',
+  Lizzy: 'lizzy.woods@ymcatrinity.org.uk',
+  Kay: 'Kay.Westgate@ymcatrinity.org.uk',
+  Rob: 'Robert.DurrantCuffe@ymcatrinity.org.uk'
 };
 
 export async function GET(request) {
