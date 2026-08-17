@@ -78,8 +78,8 @@ export default function DeliveryPlanPage() {
                   fontWeight: 700, 
                   marginBottom: '1.5rem',
                   padding: '0.75rem 1.5rem',
-                  background: 'var(--tier-1-bg)',
-                  borderLeft: '4px solid var(--tier-1)',
+                  background: 'linear-gradient(90deg, #38bdf8, #0ea5e9)',
+                  borderLeft: '4px solid #0284c7',
                   borderRadius: '8px',
                   color: '#fff',
                   boxShadow: '0 4px 10px rgba(0,0,0,0.1)'
