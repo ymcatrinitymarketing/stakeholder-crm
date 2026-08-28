@@ -164,12 +164,9 @@ export default function DeliveryTaskModal({ isOpen, onClose, task, onSaveSuccess
 
           <div className="form-group">
             <label className="form-label">Lead / Owner</label>
-            <input 
-              type="text" 
-              className="form-control" 
-              name="lead" 
-              value={formData.lead} 
-              onChange={handleChange} 
+            <MultiOwnerSelect 
+              selectedOwners={formData.lead}
+              onChange={(val) => setFormData(prev => ({...prev, lead: val}))}
             />
           </div>
           
