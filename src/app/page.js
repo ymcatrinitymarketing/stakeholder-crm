@@ -12,6 +12,7 @@ export default function Dashboard() {
   const [tierFilter, setTierFilter] = useState('All');
   const [ownerFilter, setOwnerFilter] = useState('All');
   const [categoryFilter, setCategoryFilter] = useState('All');
+  const [countyFilter, setCountyFilter] = useState('All');
   
   const [selectedStakeholder, setSelectedStakeholder] = useState(null);
   const [stakeholderToEdit, setStakeholderToEdit] = useState(null);
@@ -76,9 +77,10 @@ export default function Dashboard() {
       const matchesTier = tierFilter === 'All' ? true : s.tier === parseInt(tierFilter);
       const matchesOwner = ownerFilter === 'All' ? true : s.owned_by === ownerFilter;
       const matchesCategory = categoryFilter === 'All' ? true : s.category === categoryFilter;
-      return matchesSearch && matchesTier && matchesOwner && matchesCategory;
+      const matchesCounty = countyFilter === 'All' ? true : s.county === countyFilter || (!s.county && countyFilter === 'Other');
+      return matchesSearch && matchesTier && matchesOwner && matchesCategory && matchesCounty;
     });
-  }, [stakeholders, search, tierFilter, ownerFilter, categoryFilter]);
+  }, [stakeholders, search, tierFilter, ownerFilter, categoryFilter, countyFilter]);
 
   const handleExport = () => {
     const headers = ['Stakeholder Name', 'Organisation', 'Role', 'Category', 'Tier', 'Owned By', 'Main Contact (YMCA)', 'Focus Areas', 'Contact Details'];
@@ -193,6 +195,12 @@ export default function Dashboard() {
               <option value="Rob">Rob</option>
               <option value="Ryan">Ryan</option>
               <option value="Tim">Tim</option>
+            </select>
+            <select className="select-input" value={countyFilter} onChange={(e) => setCountyFilter(e.target.value)}>
+              <option value="All">All Locations</option>
+              <option value="Cambridgeshire">Cambridgeshire</option>
+              <option value="Suffolk">Suffolk</option>
+              <option value="Other">Other</option>
             </select>
             <button className="btn btn-outline" style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}} onClick={handleExport}>
               <Download size={18} /> Export

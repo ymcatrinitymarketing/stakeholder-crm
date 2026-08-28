@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { X, Save } from 'lucide-react';
 import MultiOwnerSelect from '@/components/MultiOwnerSelect';
+import DeliveryTaskUpdates from '@/components/DeliveryTaskUpdates';
 
 export default function DeliveryTaskModal({ isOpen, onClose, task, onSaveSuccess }) {
   const [formData, setFormData] = useState({
@@ -182,6 +183,10 @@ export default function DeliveryTaskModal({ isOpen, onClose, task, onSaveSuccess
               rows="3"
             />
           </div>
+
+          {task && task.id && (
+            <DeliveryTaskUpdates taskId={task.id} />
+          )}
 
         </div>
 

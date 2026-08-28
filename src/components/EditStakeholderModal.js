@@ -13,7 +13,8 @@ export default function EditStakeholderModal({ isOpen, onClose, stakeholder, onS
     focus_areas: '',
     tier: 4,
     main_contact: '',
-    owned_by: 'Unassigned'
+    owned_by: 'Unassigned',
+    county: 'Other'
   });
   const [isSaving, setIsSaving] = useState(false);
 
@@ -29,7 +30,8 @@ export default function EditStakeholderModal({ isOpen, onClose, stakeholder, onS
           focus_areas: stakeholder.focus_areas || '',
           tier: stakeholder.tier || 4,
           main_contact: stakeholder.main_contact || '',
-          owned_by: stakeholder.owned_by || 'Unassigned'
+          owned_by: stakeholder.owned_by || 'Unassigned',
+          county: stakeholder.county || 'Other'
         });
       } else {
         setFormData({
@@ -41,7 +43,8 @@ export default function EditStakeholderModal({ isOpen, onClose, stakeholder, onS
           focus_areas: '',
           tier: 4,
           main_contact: '',
-          owned_by: 'Unassigned'
+          owned_by: 'Unassigned',
+          county: 'Other'
         });
       }
     }
@@ -204,6 +207,14 @@ export default function EditStakeholderModal({ isOpen, onClose, stakeholder, onS
               <div style={{flex: '1 1 200px'}}>
                 <label className="form-label">Main Contact (YMCA)</label>
                 <input type="text" className="form-control" name="main_contact" value={formData.main_contact} onChange={handleChange} placeholder="e.g. Jonathan Martin" />
+              </div>
+              <div style={{flex: '1 1 200px'}}>
+                <label className="form-label">County</label>
+                <select className="form-control" name="county" value={formData.county} onChange={handleChange}>
+                  <option value="Cambridgeshire">Cambridgeshire</option>
+                  <option value="Suffolk">Suffolk</option>
+                  <option value="Other">Other</option>
+                </select>
               </div>
             </div>
           </div>

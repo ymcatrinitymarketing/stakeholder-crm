@@ -11,8 +11,8 @@ export async function POST(request) {
   const sql = getDb();
   const body = await request.json();
   const result = await sql`
-    INSERT INTO stakeholders (category, organisation, name, role, contact_details, focus_areas, tier, main_contact, owned_by)
-    VALUES (${body.category}, ${body.organisation}, ${body.name}, ${body.role}, ${body.contact_details}, ${body.focus_areas}, ${body.tier || 4}, ${body.main_contact}, ${body.owned_by || 'Unassigned'})
+    INSERT INTO stakeholders (category, organisation, name, role, contact_details, focus_areas, tier, main_contact, owned_by, county)
+    VALUES (${body.category}, ${body.organisation}, ${body.name}, ${body.role}, ${body.contact_details}, ${body.focus_areas}, ${body.tier || 4}, ${body.main_contact}, ${body.owned_by || 'Unassigned'}, ${body.county || null})
     RETURNING id
   `;
   return NextResponse.json({ id: result[0].id }, { status: 201 });

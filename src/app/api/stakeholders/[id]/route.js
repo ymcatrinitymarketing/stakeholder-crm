@@ -17,7 +17,8 @@ export async function PUT(request, { params }) {
         focus_areas = ${body.focus_areas},
         tier = ${body.tier}, 
         main_contact = ${body.main_contact}, 
-        owned_by = ${body.owned_by}
+        owned_by = ${body.owned_by},
+        county = ${body.county}
     WHERE id = ${id}
   `;
   

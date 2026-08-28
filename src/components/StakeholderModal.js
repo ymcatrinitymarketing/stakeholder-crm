@@ -251,6 +251,9 @@ export default function StakeholderModal({ isOpen, onClose, stakeholder, onStake
 
               <div style={{color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '1rem', marginBottom: '0.25rem'}}>Contact Details</div>
               <div>{stakeholder.contact_details || 'No contact provided'}</div>
+
+              <div style={{color: 'var(--text-secondary)', fontSize: '0.85rem', marginTop: '1rem', marginBottom: '0.25rem'}}>County</div>
+              <div>{stakeholder.county || 'Other'}</div>
             </div>
 
             <div className="form-group">
