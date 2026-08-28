@@ -141,6 +141,7 @@ export default function DeliveryPlanPage() {
           </div>
         )}
       </div>
+    </div>
 
       <DeliveryTaskModal
         isOpen={!!editingTask}

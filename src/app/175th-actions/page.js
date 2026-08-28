@@ -306,6 +306,7 @@ export default function ActionsPage() {
           </div>
         )}
       </div>
+    </div>
 
       <EditActionModal
         isOpen={!!editingAction}
