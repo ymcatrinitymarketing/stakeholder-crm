@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, Save } from 'lucide-react';
+import { X, Save, Send } from 'lucide-react';
 import MultiOwnerSelect from '@/components/MultiOwnerSelect';
 import DeliveryTaskUpdates from '@/components/DeliveryTaskUpdates';
 
@@ -18,6 +18,41 @@ export default function DeliveryTaskModal({ isOpen, onClose, task, onSaveSuccess
     notes: ''
   });
   const [isSaving, setIsSaving] = useState(false);
+  const [isCreatingAction, setIsCreatingAction] = useState(false);
+
+  const handleCreateAction = async () => {
+    if (!formData.activity) {
+      alert("Please enter an activity description first.");
+      return;
+    }
+    setIsCreatingAction(true);
+    try {
+      const payload = {
+        action_type: '175th',
+        action_description: formData.activity,
+        owner: formData.lead || 'Unassigned',
+        date_created: new Date().toISOString().split('T')[0],
+        due_date: formData.end_date || '',
+      };
+      
+      const res = await fetch(`/api/actions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      
+      if (res.ok) {
+        alert("Action successfully added to the 175th Actions list and email sent!");
+      } else {
+        alert("Failed to create action.");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Failed to create action.");
+    } finally {
+      setIsCreatingAction(false);
+    }
+  };
 
   useEffect(() => {
     if (task && isOpen) {
@@ -187,11 +222,17 @@ export default function DeliveryTaskModal({ isOpen, onClose, task, onSaveSuccess
 
         </div>
 
-        <div style={{display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '2rem'}}>
-          <button className="btn btn-outline" onClick={onClose}>Cancel</button>
-          <button className="btn" onClick={handleSave} disabled={isSaving}>
-            <Save size={18} /> {isSaving ? 'Saving...' : 'Save Changes'}
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '2rem'}}>
+          <button className="btn btn-outline" style={{color: 'var(--tier-1)', borderColor: 'var(--tier-1)', display: 'flex', gap: '0.5rem', alignItems: 'center'}} onClick={handleCreateAction} disabled={isCreatingAction}>
+            <Send size={18} /> {isCreatingAction ? 'Sending...' : 'Add to 175th Actions List'}
           </button>
+          
+          <div style={{display: 'flex', gap: '1rem'}}>
+            <button className="btn btn-outline" onClick={onClose}>Cancel</button>
+            <button className="btn" onClick={handleSave} disabled={isSaving}>
+              <Save size={18} /> {isSaving ? 'Saving...' : 'Save Changes'}
+            </button>
+          </div>
         </div>
       </div>
     </div>
