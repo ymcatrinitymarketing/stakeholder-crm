@@ -109,8 +109,9 @@ export default function ActionsPage() {
   });
 
   return (
-    <div className="animate-fade-in stagger-1">
-      <div className="glass-panel" style={{padding: '2rem'}}>
+    <>
+      <div className="animate-fade-in stagger-1">
+        <div className="glass-panel" style={{padding: '2rem'}}>
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem'}}>
           <h2 style={{fontSize: '1.5rem', fontWeight: 600}}>175th Anniversary Actions</h2>
           <div style={{display: 'flex', gap: '1rem', alignItems: 'center'}}>
@@ -315,6 +316,6 @@ export default function ActionsPage() {
           fetchActions();
         }}
       />
-    </div>
+    </>
   );
 }

@@ -59,8 +59,9 @@ export default function DeliveryPlanPage() {
   };
 
   return (
-    <div className="animate-fade-in stagger-1">
-      <div className="glass-panel" style={{padding: '2rem'}}>
+    <>
+      <div className="animate-fade-in stagger-1">
+        <div className="glass-panel" style={{padding: '2rem'}}>
         <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem'}}>
           <h2 style={{fontSize: '1.5rem', fontWeight: 600}}>175th Anniversary Delivery Plan</h2>
         </div>
@@ -150,6 +151,6 @@ export default function DeliveryPlanPage() {
           fetchTasks();
         }}
       />
-    </div>
+    </>
   );
 }
