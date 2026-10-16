@@ -31,6 +31,23 @@ export async function GET() {
         uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `;
+    await sql`
+      CREATE TABLE IF NOT EXISTS pledges (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        pledge_type VARCHAR(50) DEFAULT 'Action',
+        amount NUMERIC(10, 2),
+        pledge_date DATE NOT NULL,
+        pledge_description TEXT NOT NULL,
+        target_completion_date DATE,
+        status VARCHAR(50) DEFAULT 'In Progress',
+        completed_date DATE,
+        marketing_consent BOOLEAN DEFAULT false,
+        thank_you_sent BOOLEAN DEFAULT false,
+        notes TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )
+    `;
     return NextResponse.json({ success: true, message: 'Migrations run successfully' });
   } catch (err) {
     return NextResponse.json({ success: false, error: err.message }, { status: 500 });

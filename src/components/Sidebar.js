@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Users, CheckSquare, CalendarDays, Calendar as CalendarIcon, FileText, Target, Map } from 'lucide-react';
+import { Users, CheckSquare, CalendarDays, Calendar as CalendarIcon, FileText, Target, Map, HeartHandshake } from 'lucide-react';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -33,6 +33,13 @@ export default function Sidebar() {
         >
           <Target size={18} />
           175th Actions
+        </Link>
+        <Link 
+          href="/pledge-tracker" 
+          className={`sidebar-link ${pathname === '/pledge-tracker' ? 'active' : ''}`}
+        >
+          <HeartHandshake size={18} />
+          Pledge Tracker
         </Link>
         <Link 
           href="/events" 
