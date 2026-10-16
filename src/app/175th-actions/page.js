@@ -300,7 +300,7 @@ export default function ActionsPage() {
                   </button>
                 </div>
 
-                {!act.date_completed && <ActionUpdates actionId={act.id} />}
+                {!act.date_completed && <ActionUpdates actionId={act.id} defaultOpen={true} />}
               </div>
             ))}
           </div>

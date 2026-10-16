@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react';
 import { MessageSquare } from 'lucide-react';
 
-export default function ActionUpdates({ actionId }) {
+export default function ActionUpdates({ actionId, defaultOpen = false }) {
   const [updates, setUpdates] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [showUpdates, setShowUpdates] = useState(false);
+  const [showUpdates, setShowUpdates] = useState(defaultOpen);
   const [newText, setNewText] = useState('');
   const [saving, setSaving] = useState(false);
 
